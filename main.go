@@ -45,37 +45,50 @@ func main() {
 		panic(err)
 	}
 
-	db.Debug().AutoMigrate(&entity.User{}, &entity.Product{})
+	// db.Debug().AutoMigrate(&entity.User{}, &entity.Product{})
 	// db.Debug().Migrator().DropTable(&entity.Product{})
 	// db.Debug().Migrator().DropTable(&entity.User{})
 
-	CreateData()
+	// CreateData()
+	UpdateData()
 }
 
 func CreateData() {
 	// INSERT 1 DATA INTO TABLE
-	user := entity.User{
-		Email: "agil@gmail.com",
+	// user := entity.User{
+	// 	Email: "agil@gmail.com",
+	// }
+
+	// if err := db.Debug().Create(&user).Error; err != nil {
+	// 	panic(err)
+	// }
+
+	// fmt.Println(user)
+
+	// INSERT MULTIPLE DATA INTO TABLE
+	users := []entity.User{
+		{Email: "1@gmail.com"},
+		{Email: "2@gmail.com"},
+		{Email: "3@gmail.com"},
+		{Email: "4@gmail.com"},
+		{Email: "5@gmail.com"},
 	}
 
-	if err := db.Debug().Create(&user).Error; err != nil {
+	if err := db.Debug().CreateInBatches(&users, len(users)).Error; err != nil {
+		panic(err)
+	}
+
+	fmt.Println(users)
+}
+
+func UpdateData() {
+	user := entity.User{}
+
+	if err := db.Debug().Model(&user).Where("id = ?", 3).Updates(entity.User{
+		Email: "gantiemail@gmail.com",
+	}).Error; err != nil {
 		panic(err)
 	}
 
 	fmt.Println(user)
-
-	// INSERT MULTIPLE DATA INTO TABLE
-	// users := []entity.User{
-	// 	{Email: "1@gmail.com"},
-	// 	{Email: "2@gmail.com"},
-	// 	{Email: "3@gmail.com"},
-	// 	{Email: "4@gmail.com"},
-	// 	{Email: "5@gmail.com"},
-	// }
-
-	// if err := db.Debug().CreateInBatches(&users, len(users)).Error; err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(users)
 }
