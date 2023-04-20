@@ -1,0 +1,160 @@
+basePath: /
+definitions:
+  controllers.UserCreateDto:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  entity.Product:
+    properties:
+      brand:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  entity.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/entity.Product'
+        type: array
+      updatedAt:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:3030
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Hacktiv8 Users API
+  version: "1.0"
+paths:
+  /users/:
+    get:
+      consumes:
+      - application/json
+      description: Get All User Record
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Get All User
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: Create User
+        in: body
+        name: UserCreateDto
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserCreateDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Create User
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User Record By ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Delete User By ID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get User Record By ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Get User By ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      parameters:
+      - description: Update User
+        in: body
+        name: UserCreateDto
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserCreateDto'
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: Update User
+      tags:
+      - users
+swagger: "2.0"

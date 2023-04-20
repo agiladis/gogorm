@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"gogorm/entity"
+	"gogorm/router"
 )
 
 const (
@@ -26,7 +26,7 @@ var (
 	err error
 )
 
-func main() {
+func init() {
 	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DATABASE)
 
 	db, err = gorm.Open(postgres.Open(connString), &gorm.Config{
@@ -44,51 +44,96 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// @title           Hacktiv8 Users API
+// @version         1.0
+// @description     This is a sample server celler server.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:3030
+// @BasePath  /
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
+func main() {
 
 	// db.Debug().AutoMigrate(&entity.User{}, &entity.Product{})
 	// db.Debug().Migrator().DropTable(&entity.Product{})
 	// db.Debug().Migrator().DropTable(&entity.User{})
 
+	router.StartServer(db.Debug()).Run(":3030")
+
 	// CreateData()
-	UpdateData()
+	// UpdateData()
+	// GetAllData()
+	// GetDataByID()
+	// DeleteData()
 }
 
-func CreateData() {
-	// INSERT 1 DATA INTO TABLE
-	// user := entity.User{
-	// 	Email: "agil@gmail.com",
-	// }
+// func DeleteData() {
+// 	user := entity.User{}
+// 	db.Debug().Where("id = ?", 1).Delete(&user)
+// 	// println(user)
+// }
 
-	// if err := db.Debug().Create(&user).Error; err != nil {
-	// 	panic(err)
-	// }
+// func GetDataByID() {
+// 	user := entity.User{}
 
-	// fmt.Println(user)
+// 	db.Debug().Where("id = ?", 3).First(&user)
 
-	// INSERT MULTIPLE DATA INTO TABLE
-	users := []entity.User{
-		{Email: "1@gmail.com"},
-		{Email: "2@gmail.com"},
-		{Email: "3@gmail.com"},
-		{Email: "4@gmail.com"},
-		{Email: "5@gmail.com"},
-	}
+// 	fmt.Println(user)
+// }
 
-	if err := db.Debug().CreateInBatches(&users, len(users)).Error; err != nil {
-		panic(err)
-	}
+// func GetAllData() {
+// 	users := []entity.User{}
 
-	fmt.Println(users)
-}
+// 	db.Debug().Find(&users)
 
-func UpdateData() {
-	user := entity.User{}
+// 	fmt.Println(users)
+// }
 
-	if err := db.Debug().Model(&user).Where("id = ?", 3).Updates(entity.User{
-		Email: "gantiemail@gmail.com",
-	}).Error; err != nil {
-		panic(err)
-	}
+// func CreateData() {
+// 	// INSERT 1 DATA INTO TABLE
+// 	// user := entity.User{
+// 	// 	Email: "",
+// 	// }
 
-	fmt.Println(user)
-}
+// 	// if err := db.Debug().Create(&user).Error; err != nil {
+// 	// 	panic(err)
+// 	// }
+
+// 	// fmt.Println(user)
+
+// 	// INSERT MULTIPLE DATA INTO TABLE
+// 	users := []entity.User{
+// 		{Email: ""},
+// 		{Email: ""},
+// 		{Email: ""},
+// 	}
+
+// 	if err := db.Debug().CreateInBatches(&users, len(users)).Error; err != nil {
+// 		panic(err)
+// 	}
+
+// 	fmt.Println(users)
+// }
+
+// func UpdateData() {
+// 	user := entity.User{}
+
+// 	if err := db.Debug().Model(&user).Where("id = ?", 3).Updates(entity.User{
+// 		Email: "gantiemail@gmail.com",
+// 	}).Error; err != nil {
+// 		panic(err)
+// 	}
+
+// 	fmt.Println(user)
+// }
