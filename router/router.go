@@ -3,6 +3,7 @@ package router
 import (
 	"gogorm/controllers"
 	"gogorm/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -11,6 +12,11 @@ import (
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+var (
+	USERNAME = "admin"
+	PASSWORD = "123456"
 )
 
 func StartServer(db *gorm.DB) *gin.Engine {
@@ -24,6 +30,27 @@ func StartServer(db *gorm.DB) *gin.Engine {
 	}
 
 	app := gin.Default()
+
+	app.Use(func(ctx *gin.Context) {
+		username, password, ok := ctx.Request.BasicAuth()
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"message": "please provide auth credential",
+			})
+			return
+		}
+
+		if USERNAME != username || PASSWORD != password {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"message": "invalid authentication credential",
+			})
+			return
+		}
+
+		ctx.Next()
+		return
+	})
+
 	app.GET("/users", userController.GetAllUser)
 	app.POST("/users", userController.CreateUser)
 	app.GET("/users/:id", userController.GetUserById)
