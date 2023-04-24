@@ -3,7 +3,6 @@ package router
 import (
 	"gogorm/controllers"
 	"gogorm/services"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -31,31 +30,36 @@ func StartServer(db *gorm.DB) *gin.Engine {
 
 	app := gin.Default()
 
-	app.Use(func(ctx *gin.Context) {
-		username, password, ok := ctx.Request.BasicAuth()
-		if !ok {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "please provide auth credential",
-			})
-			return
-		}
+	// app.Use(func(ctx *gin.Context) {
+	// 	username, password, ok := ctx.Request.BasicAuth()
+	// 	if !ok {
+	// 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	// 			"message": "please provide auth credential",
+	// 		})
+	// 		return
+	// 	}
 
-		if USERNAME != username || PASSWORD != password {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "invalid authentication credential",
-			})
-			return
-		}
+	// 	if USERNAME != username || PASSWORD != password {
+	// 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	// 			"message": "invalid authentication credential",
+	// 		})
+	// 		return
+	// 	}
 
-		ctx.Next()
-		return
-	})
+	// 	ctx.Next()
+	// 	return
+	// })
 
-	app.GET("/users", userController.GetAllUser)
-	app.POST("/users", userController.CreateUser)
-	app.GET("/users/:id", userController.GetUserById)
-	app.PUT("/users/:id", userController.UpdateUserById)
-	app.DELETE("/users/:id", userController.DeleteUserById)
+	authorized := app.Group("/users", gin.BasicAuth(gin.Accounts{
+		"test":  "123456",
+		"admin": "123456",
+	}))
+
+	authorized.GET("/", userController.GetAllUser)
+	authorized.POST("", userController.CreateUser)
+	authorized.GET("/:id", userController.GetUserById)
+	authorized.PUT("/:id", userController.UpdateUserById)
+	authorized.DELETE("/:id", userController.DeleteUserById)
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return app
