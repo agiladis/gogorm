@@ -11,14 +11,8 @@ import (
 	"gorm.io/gorm/logger"
 
 	"gogorm/router"
-)
 
-const (
-	DB_USERNAME = "postgres"
-	DB_PORT     = "5432"
-	DB_HOST     = "localhost"
-	DB_PASSWORD = "postgres"
-	DB_DATABASE = "gorm"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -27,6 +21,19 @@ var (
 )
 
 func init() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
+	var (
+		DB_USERNAME = os.Getenv("DB_USERNAME")
+		DB_PORT     = os.Getenv("DB_PORT")
+		DB_HOST     = os.Getenv("DB_HOST")
+		DB_PASSWORD = os.Getenv("DB_PASSWORD")
+		DB_DATABASE = os.Getenv("DB_DATABASE")
+	)
+
 	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DATABASE)
 
 	db, err = gorm.Open(postgres.Open(connString), &gorm.Config{
