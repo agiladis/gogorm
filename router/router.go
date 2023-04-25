@@ -28,32 +28,15 @@ func StartServer(db *gorm.DB) *gin.Engine {
 		UserService: &userService,
 	}
 
+	authController := controllers.AuthController{
+		UserService: &userService,
+	}
+
 	app := gin.Default()
 
-	// app.Use(func(ctx *gin.Context) {
-	// 	username, password, ok := ctx.Request.BasicAuth()
-	// 	if !ok {
-	// 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-	// 			"message": "please provide auth credential",
-	// 		})
-	// 		return
-	// 	}
+	app.POST("/login", authController.Login)
 
-	// 	if USERNAME != username || PASSWORD != password {
-	// 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-	// 			"message": "invalid authentication credential",
-	// 		})
-	// 		return
-	// 	}
-
-	// 	ctx.Next()
-	// 	return
-	// })
-
-	authorized := app.Group("/users", gin.BasicAuth(gin.Accounts{
-		"test":  "123456",
-		"admin": "123456",
-	}))
+	authorized := app.Group("/users")
 
 	authorized.GET("/", userController.GetAllUser)
 	authorized.POST("", userController.CreateUser)

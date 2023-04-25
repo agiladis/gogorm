@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"gogorm/entity"
 	"gogorm/router"
 
 	"github.com/joho/godotenv"
@@ -72,9 +73,9 @@ func init() {
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
 
-	// db.Debug().AutoMigrate(&entity.User{}, &entity.Product{})
-	// db.Debug().Migrator().DropTable(&entity.Product{})
 	// db.Debug().Migrator().DropTable(&entity.User{})
+	db.Debug().AutoMigrate(&entity.User{}, &entity.Product{})
+	// db.Debug().Migrator().DropTable(&entity.Product{})
 
 	router.StartServer(db.Debug()).Run(":3030")
 

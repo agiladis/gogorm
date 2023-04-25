@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 
 	"gogorm/services"
 )
@@ -15,7 +16,8 @@ type UserController struct {
 }
 
 type UserCreateDto struct {
-	Email string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 // CreateUser godoc
@@ -41,8 +43,11 @@ func (uc *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
+	passwordHashed, _ := bcrypt.GenerateFromPassword([]byte(userCreateDto.Password), 10)
+
 	user := entity.User{
-		Email: userCreateDto.Email,
+		Email:    userCreateDto.Email,
+		Password: string(passwordHashed),
 	}
 
 	if result, err = uc.UserService.Create(user); err != nil {

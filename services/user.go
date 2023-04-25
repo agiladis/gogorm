@@ -11,6 +11,17 @@ type UserService struct {
 	DB *gorm.DB
 }
 
+func (us *UserService) GetUserByEmail(email string) (entity.User, error) {
+	var user entity.User
+
+	err := us.DB.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
 func (us *UserService) Create(user entity.User) (entity.User, error) {
 	if err := us.DB.Create(&user).Error; err != nil {
 		// ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
